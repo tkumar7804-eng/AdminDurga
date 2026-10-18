@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DURGA PUJA SAMITI — ADMIN LIVE REPORT & PDF PANEL</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter & Cinzel -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        festiveRed: '#8B0000',
+                        deepCrimson: '#600000',
+                        festiveGold: '#D4AF37',
+                        lightGold: '#F9E8A2',
+                        darkGold: '#AA7C11',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Cinzel', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .festive-title { font-family: 'Cinzel', serif; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 3px; }
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white !important; color: black !important; }
+            .print-shadow { box-shadow: none !important; border: none !important; }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 min-h-screen flex flex-col selection:bg-festiveGold selection:text-deepCrimson">
+
+    <script>
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzdo4Bko0Eudr-X1Cgvbo4R9AwSVjyuV7EvnfH28TtYEgEF1yWFS-RDRAjvCZ3EKo_kKA/exec';
+
+        const STORAGE_KEYS = {
+            USERS: 'dp_users_v2',
+            CURRENT_USER: 'dp_current_user_v2',
+            CHANDA: 'dp_chanda_v2',
+            KHARCH: 'dp_kharch_v2',
+            DEPOSIT: 'dp_deposit_v2',
+            TRASH: 'dp_trash_v2',
+            VILLAGES: 'dp_villages_v2',
+            NOTICE: 'dp_notice_v2',
+            OLD_CHANDA: 'dp_old_chanda_2025',
+            ACTIVITY: 'dp_activity_v2'
+        };
+
+        const DEFAULT_VILLAGES = [
+            'Sombari Hat', 'Hareramtola', 'Khaditola', 'Mirjanagar', 'Bintola', 
+            'Bhagat Toli', 'Kachhari', 'Pakija More', 'Mistritola'
+        ];
+
+        const OLD_CHANDA_DATA_2025 = [
+            { name: "kaushalya chandra singh", village: "Hareramtola", amount: 251 },
+            { name: "vikas mandal", village: "Hareramtola", amount: 205 },
+            { name: "vinod rajak", village: "Hareramtola", amount: 205 },
+            { name: "anand ghosh", village: "Hareramtola", amount: 101 },
+            { name: "mukad mandal", village: "Hareramtola", amount: 102 },
+            { name: "tara ghosh", village: "Hareramtola", amount: 105 },
+            { name: "bharat karmakar", village: "Hareramtola", amount: 220 },
+            { name: "munmuni das", village: "Hareramtola", amount: 105 },
+            { name: "dinesh rappak", village: "Hareramtola", amount: 110 },
+            { name: "jyotin ghosh", village: "Hareramtola", amount: 151 },
+            { name: "lakshman swarnakar", village: "Hareramtola", amount: 50 },
+            { name: "vijay swarnakar", village: "Hareramtola", amount: 50 },
+            { name: "manoj mahato", village: "Hareramtola", amount: 100 },
+            { name: "noresh mandal", village: "Hareramtola", amount: 100 },
+            { name: "montu ghosh", village: "Hareramtola", amount: 102 },
+            { name: "satto rajak", village: "Hareramtola", amount: 102 },
+            { name: "chakku mandal", village: "Hareramtola", amount: 150 },
+            { name: "sudhen ghosh", village: "Hareramtola", amount: 1001 },
+            { name: "pakal mandal", village: "Hareramtola", amount: 210 },
+            { name: "bicky mandal", village: "Hareramtola", amount: 200 },
+            { name: "sosin ghosh", village: "Hareramtola", amount: 55 },
+            { name: "romen mandal", village: "Hareramtola", amount: 150 },
+            { name: "arun mandal", village: "Hareramtola", amount: 501 },
+            { name: "bhondu rajak", village: "Hareramtola", amount: 105 },
+            { name: "suresh ghosh", village: "Hareramtola", amount: 55 },
+            { name: "vikash rajak", village: "Hareramtola", amount: 100 },
+            { name: "ashu ghosh", village: "Hareramtola", amount: 151 },
+            { name: "kundan gupta", village: "Hareramtola", amount: 3001 },
+            { name: "dhanny rajak", village: "Hareramtola", amount: 1001 },
+            { name: "sanjay mandal", village: "Hareramtola", amount: 501 },
+            { name: "sanjay yadav", village: "Hareramtola", amount: 2001 },
+            { name: "madhusudan ghosh", village: "Hareramtola", amount: 501 },
+            { name: "prabhas ghosh", village: "Hareramtola", amount: 2500 },
+            { name: "nakul rajak", village: "Hareramtola", amount: 1001 },
+            { name: "jichhu mandal", village: "Hareramtola", amount: 1500 },
+            { name: "subol ghosh", village: "Hareramtola", amount: 102 },
+            { name: "santosh mahato", village: "Hareramtola", amount: 1000 },
+            { name: "shirish mandal", village: "Hareramtola", amount: 201 },
+            { name: "sanatan karmakar", village: "Hareramtola", amount: 301 },
+            { name: "dhanraj ghosh", village: "Hareramtola", amount: 250 },
+            { name: "banu mandal", village: "Hareramtola", amount: 100 },
+            { name: "ramu rajak", village: "Hareramtola", amount: 100 },
+            { name: "nitant ravidas", village: "Hareramtola", amount: 100 },
+            { name: "suman mahato", village: "Hareramtola", amount: 155 },
+            { name: "uttam mandal", village: "Hareramtola", amount: 100 },
+            { name: "sulesh ghosh", village: "Hareramtola", amount: 105 },
+            { name: "vinod karmakar", village: "Hareramtola", amount: 105 },
+            { name: "santosh sharma", village: "Hareramtola", amount: 100 },
+            { name: "prakash rajak", village: "Hareramtola", amount: 100 },
+            { name: "chakku rajak", village: "Hareramtola", amount: 200 },
+            { name: "sonu mandal", village: "Hareramtola", amount: 51 },
+            { name: "nimay rajak", village: "Hareramtola", amount: 101 },
+            { name: "sunny mandal", village: "Hareramtola", amount: 100 },
+            { name: "nikhil ghosh", village: "Hareramtola", amount: 51 },
+            { name: "gorrango mandal", village: "Khaditola", amount: 220 },
+            { name: "sanatan mandal", village: "Khaditola", amount: 51 },
+            { name: "khomesh mandal", village: "Khaditola", amount: 100 },
+            { name: "vikram mandal", village: "Khaditola", amount: 105 },
+            { name: "pinku mandal", village: "Khaditola", amount: 205 },
+            { name: "khudir das", village: "Khaditola", amount: 50 },
+            { name: "bapi kumar", village: "Khaditola", amount: 50 },
+            { name: "fekan mandal", village: "Khaditola", amount: 50 },
+            { name: "bhudev mandal", village: "Khaditola", amount: 100 },
+            { name: "niku mandal", village: "Khaditola", amount: 55 },
+            { name: "nagardip mandal", village: "Khaditola", amount: 100 },
+            { name: "sakaldev mandal", village: "Khaditola", amount: 150 },
+            { name: "ravi mandal", village: "Khaditola", amount: 51 },
+            { name: "mithun mandal", village: "Khaditola", amount: 100 },
+            { name: "gopal mandal", village: "Khaditola", amount: 50 },
+            { name: "pran mandal", village: "Khaditola", amount: 50 },
+            { name: "ratan mandal", village: "Khaditola", amount: 30 },
+            { name: "amit mandal", village: "Khaditola", amount: 52 },
+            { name: "pratima devi", village: "Khaditola", amount: 150 },
+            { name: "vairnath mandal", village: "Khaditola", amount: 100 },
+            { name: "rajkumar mandal", village: "Khaditola", amount: 102 },
+            { name: "shubham mandal", village: "Khaditola", amount: 160 },
+            { name: "vaidyanath mandal", village: "Khaditola", amount: 100 },
+            { name: "rajesh mandal", village: "Khaditola", amount: 110 },
+            { name: "abhilash mandal", village: "Khaditola", amount: 1000 },
+            { name: "suchit mandal", village: "Khaditola", amount: 100 },
+            { name: "lakhvi chand mandal", village: "Mirjanagar", amount: 72 },
+            { name: "arjun mandal", village: "Mirjanagar", amount: 350 },
+            { name: "ajit mandal", village: "Mirjanagar", amount: 151 },
+            { name: "viren mandal", village: "Mirjanagar", amount: 110 },
+            { name: "nivaran mandal", village: "Mirjanagar", amount: 251 },
+            { name: "fekan ghosh", village: "Mirjanagar", amount: 211 },
+            { name: "manish mandal", village: "Mirjanagar", amount: 202 },
+            { name: "dhiren mandal", village: "Mirjanagar", amount: 110 },
+            { name: "balram mandal", village: "Mirjanagar", amount: 202 },
+            { name: "nokesh sarkar", village: "Mirjanagar", amount: 205 },
+            { name: "tinku mandal", village: "Mirjanagar", amount: 111 },
+            { name: "tapan jha", village: "Mirjanagar", amount: 550 },
+            { name: "om प्रकाश mandal", village: "Mirjanagar", amount: 205 },
+            { name: "munilal mandal", village: "Mirjanagar", amount: 200 },
+            { name: "satkudi mandal", village: "Mirjanagar", amount: 41 },
+            { name: "kishni mandal", village: "Mirjanagar", amount: 50 },
+            { name: "kailash mandal", village: "Mirjanagar", amount: 100 },
+            { name: "harivol mandal", village: "Mirjanagar", amount: 100 },
+            { name: "bechen mandal", village: "Mirjanagar", amount: 110 },
+            { name: "suchin mandal", village: "Mirjanagar", amount: 151 },
+            { name: "namo mandal", village: "Mirjanagar", amount: 100 },
+            { name: "bhim mandal", village: "Mirjanagar", amount: 210 },
+            { name: "nokul mandal", village: "Mirjanagar", amount: 100 },
+            { name: "sukumar ghosh", village: "Mirjanagar", amount: 100 },
+            { name: "karan ghosh", village: "Mirjanagar", amount: 100 },
+            { name: "lakkhi mandal", village: "Mirjanagar", amount: 50 },
+            { name: "sanjeev mandal", village: "Mirjanagar", amount: 55 },
+            { name: "ashok mandal", village: "Mirjanagar", amount: 500 },
+            { name: "sukesh mandal", village: "Mirjanagar", amount: 150 },
+            { name: "prakash mandal", village: "Mirjanagar", amount: 100 },
+            { name: "anku mandal", village: "Mirjanagar", amount: 150 },
+            { name: "vifal mandal", village: "Mirjanagar", amount: 200 },
+            { name: "ram lakhan mandal", village: "Mirjanagar", amount: 102 },
+            { name: "shankar mandal", village: "Mirjanagar", amount: 50 },
+            { name: "bharat das", village: "Mirjanagar", amount: 3001 },
+            { name: "babloo mandal", village: "Mirjanagar", amount: 150 },
+            { name: "khadir ray", village: "Mirjanagar", amount: 100 },
+            { name: "chedan mandal", village: "Mirjanagar", amount: 101 },
+            { name: "deven mandal", village: "Mirjanagar", amount: 101 },
+            { name: "anil mandal", village: "Mirjanagar", amount: 100 },
+            { name: "guddi kumar", village: "Mirjanagar", amount: 50 },
+            { name: "topensh mandal", village: "Mirjanagar", amount: 160 },
+            { name: "vishnu mandal", village: "Mirjanagar", amount: 251 },
+            { name: "sanjeev ray", village: "Somvari Hat", amount: 520 },
+            { name: "rajkumar sarkar", village: "Somvari Hat", amount: 5005 },
+            { name: "gautam sarkar", village: "Somvari Hat", amount: 201 },
+            { name: "swapna sarkar", village: "Somvari Hat", amount: 511 },
+            { name: "manish kumar mandal", village: "Somvari Hat", amount: 202 },
+            { name: "prabhat sarkar", village: "Somvari Hat", amount: 104 },
+            { name: "manav ray", village: "Somvari Hat", amount: 310 },
+            { name: "madhu swarnakar", village: "Somvari Hat", amount: 501 },
+            { name: "govind rajak", village: "Somvari Hat", amount: 505 },
+            { name: "nirmala devi", village: "Somvari Hat", amount: 21 },
+            { name: "tinku sarkar", village: "Somvari Hat", amount: 501 },
+            { name: "chaitu ray", village: "Somvari Hat", amount: 300 },
+            { name: "nimay sarkar", village: "Somvari Hat", amount: 505 },
+            { name: "gautam ray", village: "Somvari Hat", amount: 1002 },
+            { name: "annapurna jha", village: "Somvari Hat", amount: 105 },
+            { name: "bharti ray", village: "Somvari Hat", amount: 211 },
+            { name: "pulchandra rajak", village: "Somvari Hat", amount: 521 },
+            { name: "vikash sarkar", village: "Somvari Hat", amount: 501 },
+            { name: "rohit mandal", village: "Somvari Hat", amount: 1001 },
+            { name: "manoj sarkar", village: "Somvari Hat", amount: 501 },
+            { name: "raju jha", village: "Somvari Hat", amount: 1001 },
+            { name: "kishore swarnakar", village: "Somvari Hat", amount: 700 },
+            { name: "shiva swarnakar", village: "Somvari Hat", amount: 1100 },
+            { name: "jyoti sarkar", village: "Somvari Hat", amount: 411 },
+            { name: "ashok swarnakar", village: "Somvari Hat", amount: 3005 },
+            { name: "vishu ray", village: "Somvari Hat", amount: 551 },
+            { name: "tariq rajak", village: "Somvari Hat", amount: 1010 },
+            { name: "praveen sarkar", village: "Somvari Hat", amount: 1100 },
+            { name: "arun sarkar", village: "Somvari Hat", amount: 1002 },
+            { name: "santosh mandal", village: "Somvari Hat", amount: 501 },
+            { name: "pran sarkar", village: "Somvari Hat", amount: 102 },
+            { name: "ratan ray", village: "Somvari Hat", amount: 500 },
+            { name: "prakash ray", village: "Somvari Hat", amount: 301 },
+            { name: "suphal ray", village: "Somvari Hat", amount: 1051 },
+            { name: "prasenjit ray", village: "Somvari Hat", amount: 501 },
+            { name: "sukku ray", village: "Somvari Hat", amount: 511 },
+            { name: "manoj swarnakar", village: "Somvari Hat", amount: 2001 },
+            { name: "jitendra swarnakar", village: "Somvari Hat", amount: 5001 },
+            { name: "biswajit swarnakar", village: "Somvari Hat", amount: 5051 },
+            { name: "gopal swarnakar", village: "Somvari Hat", amount: 5151 },
+            { name: "hriday sarkar", village: "Somvari Hat", amount: 5151 },
+            { name: "pankaj swarnakar", village: "Somvari Hat", amount: 2001 },
+            { name: "mangal ray", village: "Somvari Hat", amount: 501 },
+            { name: "digen ray", village: "Somvari Hat", amount: 2501 },
+            { name: "babulal swarnakar", village: "Somvari Hat", amount: 1005 },
+            { name: "gautam swarnakar", village: "Somvari Hat", amount: 5051 },
+            { name: "sanjay swarnakar", village: "Somvari Hat", amount: 2101 },
+            { name: "suchin ray", village: "Somvari Hat", amount: 551 },
+            { name: "deepak singh", village: "Somvari Hat", amount: 2501 },
+            { name: "dilip sarkar", village: "Somvari Hat", amount: 1001 },
+            { name: "chandan ray", village: "Somvari Hat", amount: 500 },
+            { name: "montu mandal", village: "Somvari Hat", amount: 1001 },
+            { name: "disco ray", village: "Somvari Hat", amount: 1100 },
+            { name: "uttam sarkar", village: "Somvari Hat", amount: 5551 },
+            { name: "sagar ray", village: "Somvari Hat", amount: 501 },
+            { name: "ganga ray", village: "Somvari Hat", amount: 801 },
+            { name: "dhananjay ray", village: "Somvari Hat", amount: 500 },
+            { name: "pappu mandal", village: "Somvari Hat", amount: 1102 },
+            { name: "niranjan swarnakar", village: "Somvari Hat", amount: 5011 },
+            { name: "vinod ray", village: "Somvari Hat", amount: 500 },
+            { name: "pradip ray", village: "Somvari Hat", amount: 251 },
+            { name: "lalan mandal", village: "Somvari Hat", amount: 251 },
+            { name: "ujjwal sarkar", village: "Somvari Hat", amount: 500 },
+            { name: "khudi sarkar", village: "Somvari Hat", amount: 252 },
+            { name: "chhotan sarkar", village: "Somvari Hat", amount: 102 },
+            { name: "dilip swarnakar", village: "Somvari Hat", amount: 2101 },
+            { name: "arun ray", village: "Somvari Hat", amount: 300 },
+            { name: "vilochan mandal", village: "Somvari Hat", amount: 105 },
+            { name: "santosh sarkar", village: "Somvari Hat", amount: 305 },
+            { name: "raju singh", village: "Somvari Hat", amount: 551 },
+            { name: "vimal mandal", village: "Somvari Hat", amount: 505 },
+            { name: "dev ray", village: "Somvari Hat", amount: 151 },
+            { name: "pappu sarkar", village: "Somvari Hat", amount: 201 },
+            { name: "ganesh ray", village: "Somvari Hat", amount: 250 },
+            { name: "appu sarkar", village: "Somvari Hat", amount: 251 },
+            { name: "rajkumar singh", village: "Somvari Hat", amount: 502 },
+            { name: "deepnarayan ray", village: "Somvari Hat", amount: 500 },
+            { name: "sudam ray", village: "Somvari Hat", amount: 501 },
+            { name: "birbal ray", village: "Somvari Hat", amount: 101 },
+            { name: "sorjit ray", village: "Somvari Hat", amount: 155 },
+            { name: "munnu ray", village: "Somvari Hat", amount: 1100 },
+            { name: "fulchan mandal", village: "Somvari Hat", amount: 505 },
+            { name: "bishu sarkar", village: "Somvari Hat", amount: 205 },
+            { name: "dablu swarnakar", village: "Somvari Hat", amount: 251 },
+            { name: "bhola swarnakar", village: "Somvari Hat", amount: 201 },
+            { name: "dinesh sarkar", village: "Somvari Hat", amount: 301 },
+            { name: "ashu sarkar", village: "Somvari Hat", amount: 101 },
+            { name: "bindu ray", village: "Somvari Hat", amount: 205 },
+            { name: "ashok sarkar", village: "Somvari Hat", amount: 112 },
+            { name: "labbu sarkar", village: "Somvari Hat", amount: 501 },
+            { name: "lalu ray", village: "Somvari Hat", amount: 501 },
+            { name: "hiralal sharma", village: "Bintola", amount: 251 },
+            { name: "pankaj sharma", village: "Bintola", amount: 152 },
+            { name: "motilal ravidas", village: "Bintola", amount: 151 },
+            { name: "rajkumar sharma", village: "Mistritola", amount: 3001 },
+            { name: "gulab sharma", village: "Bintola", amount: 251 },
+            { name: "rampravesh mahato", village: "Bintola", amount: 151 },
+            { name: "amar ravidas", village: "Bintola", amount: 110 },
+            { name: "dukhu mandal", village: "Bintola", amount: 100 },
+            { name: "bhikhari rajak", village: "Bintola", amount: 151 },
+            { name: "varun mandal", village: "Bintola", amount: 201 },
+            { name: "dr uttam haldar", village: "Bintola", amount: 5001 },
+            { name: "suraj kumar mandal", village: "Bintola", amount: 105 },
+            { name: "prabhu mahato", village: "Bintola", amount: 125 },
+            { name: "babloo mahato", village: "Bintola", amount: 205 },
+            { name: "nilesh bhagat", village: "Bhagat Toli", amount: 500 },
+            { name: "ganga prasad bhagat", village: "Bhagat Toli", amount: 1100 },
+            { name: "babloo chaudhary", village: "Bhagat Toli", amount: 1101 },
+            { name: "karan gupta", village: "Kachhari", amount: 76 },
+            { name: "mithun sah", village: "Kachhari", amount: 101 },
+            { name: "kundan yadav", village: "Kachhari", amount: 1100 },
+            { name: "santosh mandal", village: "Pakija More", amount: 252 },
+            { name: "sadhu mandal", village: "Pakija More", amount: 105 },
+            { name: "suraj swarnakar", village: "Pakija More", amount: 1005 },
+            { name: "dr praveen haldar", village: "Pakija More", amount: 505 },
+            { name: "pappu saha", village: "Pakija More", amount: 1500 },
+            { name: "mohan thakur", village: "Pakija More", amount: 150 },
+            { name: "wine shop", village: "Pakija More", amount: 1001 }
+        ];
+
+        let globalData = {
+            chanda: [],
+            kharch: [],
+            deposit: [],
+            trash: [],
+            activity: []
+        };
+
+        function getStorage(key, defaultVal) {
+            try {
+                const data = localStorage.getItem(key);
+                return data ? JSON.parse(data) : defaultVal;
+            } catch (e) {
+                return defaultVal;
+            }
+        }
+
+        function setStorage(key, val) {
+            try {
+                localStorage.setItem(key, JSON.stringify(val));
+            } catch (e) {
+                console.error('LocalStorage error:', e);
+            }
+        }
+
+        window.onload = async function() {
+            await fetchAllData();
+        };
+
+        async function fetchAllData() {
+            const statusEl = document.getElementById('syncStatusText');
+            statusEl.innerHTML = '<i class="fa-solid fa-rotate fa-spin mr-1"></i> Syncing Fresh Data...';
+            
+            try {
+                const res = await fetch(APPS_SCRIPT_URL + '?action=GET_ALL&t=' + Date.now());
+                if (res.ok) {
+                    const json = await res.json();
+                    const db = json.data || json;
+                    if (db) {
+                        if (Array.isArray(db.CHANDA)) globalData.chanda = db.CHANDA.filter(x => x && x.status !== 'Deleted');
+                        if (Array.isArray(db.KHARCH)) globalData.kharch = db.KHARCH.filter(x => x && x.status !== 'Deleted');
+                        if (Array.isArray(db.DEPOSIT)) globalData.deposit = db.DEPOSIT.filter(x => x && x.status !== 'Deleted');
+                        if (Array.isArray(db.ACTIVITY)) globalData.activity = db.ACTIVITY;
+                    }
+                }
+            } catch (err) {
+                console.error('Cloud fetch failed, fallback to local:', err);
+            }
+
+            // Agar cloud ya local storage se data na mile toh localStorage se uthayein
+            if (globalData.chanda.length === 0) {
+                globalData.chanda = getStorage(STORAGE_KEYS.CHANDA, []).filter(x => x && x.status !== 'Deleted');
+            }
+            if (globalData.kharch.length === 0) {
+                globalData.kharch = getStorage(STORAGE_KEYS.KHARCH, []).filter(x => x && x.status !== 'Deleted');
+            }
+            if (globalData.deposit.length === 0) {
+                globalData.deposit = getStorage(STORAGE_KEYS.DEPOSIT, []).filter(x => x && x.status !== 'Deleted');
+            }
+            if (globalData.activity.length === 0) {
+                globalData.activity = getStorage(STORAGE_KEYS.ACTIVITY, []);
+            }
+
+            populateVillageFilter();
+            updateDashboardStats();
+            renderChandaTable();
+            renderKharchTable();
+            renderDepositTable();
+            renderActivityTable();
+            handleSmartDonorLookup();
+
+            statusEl.innerHTML = '<i class="fa-solid fa-cloud-check mr-1"></i> Live Synced';
+        }
+
+        function populateVillageFilter() {
+            const villages = new Set(DEFAULT_VILLAGES);
+            globalData.chanda.forEach(c => { if (c.village) villages.add(c.village); });
+            const sel = document.getElementById('villageFilterChanda');
+            if (!sel) return;
+            const currentVal = sel.value;
+            sel.innerHTML = `<option value="">All Villages</option>` + 
+                Array.from(villages).map(v => `<option value="${v}">${v}</option>`).join('');
+            sel.value = currentVal;
+        }
+
+        // INSTANT DONOR SEARCH BAR LOGIC
+        function handleSmartDonorLookup() {
+            const queryInput = document.getElementById('globalDonorSearchInput');
+            const resultsBox = document.getElementById('globalDonorResultsBox');
+            const clearBtn = document.getElementById('clearDonorSearchBtn');
+            if (!queryInput || !resultsBox) return;
+
+            const q = queryInput.value.trim().toLowerCase();
+
+            const tableSearch = document.getElementById('searchChanda');
+            if (tableSearch && tableSearch.value !== queryInput.value) {
+                tableSearch.value = queryInput.value;
+                renderChandaTable();
+            }
+
+            if (!q) {
+                resultsBox.classList.add('hidden');
+                if (clearBtn) clearBtn.classList.add('hidden');
+                return;
+            }
+
+            if (clearBtn) clearBtn.classList.remove('hidden');
+            resultsBox.classList.remove('hidden');
+
+            const currentMatches = globalData.chanda.filter(x =>
+                (x.name || '').toLowerCase().includes(q) ||
+                (x.village || '').toLowerCase().includes(q) ||
+                (x.id || '').toLowerCase().includes(q)
+            );
+
+            const oldMatches = OLD_CHANDA_DATA_2025.filter(old => {
+                const matchesQuery = (old.name || '').toLowerCase().includes(q) || (old.village || '').toLowerCase().includes(q);
+                const alreadyIn2026 = currentMatches.some(curr => 
+                    (curr.name || '').toLowerCase() === (old.name || '').toLowerCase()
+                );
+                return matchesQuery && !alreadyIn2026;
+            });
+
+            if (currentMatches.length === 0 && oldMatches.length === 0) {
+                resultsBox.innerHTML = `
+                    <div class="bg-red-50 border border-red-200 rounded-xl p-4 text-center text-xs text-red-700 font-semibold">
+                        <i class="fa-solid fa-circle-exclamation mr-1"></i> "${queryInput.value}" naam se koi Donor record nahi mila.
+                    </div>
+                `;
+                return;
+            }
+
+            let html = `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-3">`;
+
+            currentMatches.forEach(d => {
+                const paidAmt = parseFloat(d.amount) || 0;
+                const slipAmt = parseFloat(d.slip) || 0;
+                const lastYrAmt = parseFloat(d.lastYear) || 0;
+                const dueAmt = slipAmt > paidAmt ? (slipAmt - paidAmt) : 0;
+
+                html += `
+                    <div class="bg-gradient-to-br from-white to-amber-50/60 rounded-xl p-4 border-2 border-festiveGold shadow-md relative">
+                        <div class="flex items-start justify-between border-b border-amber-200 pb-2.5">
+                            <div>
+                                <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-red-100 text-festiveRed">${d.id || '2026-REC'}</span>
+                                <h4 class="font-extrabold text-base text-gray-900 capitalize mt-1">${d.name}</h4>
+                                <p class="text-xs text-gray-600 font-medium"><i class="fa-solid fa-location-dot text-festiveRed mr-1"></i>${d.village}</p>
+                            </div>
+                            <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase bg-emerald-100 text-emerald-800 border border-emerald-300">
+                                <i class="fa-solid fa-circle-check mr-0.5"></i> 2026 Paid
+                            </span>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-2 my-3 text-center bg-white p-2.5 rounded-lg border border-gray-200">
+                            <div>
+                                <p class="text-[10px] text-gray-400 uppercase font-bold">Last Year</p>
+                                <p class="font-mono font-bold text-xs text-gray-700">₹${lastYrAmt}</p>
+                            </div>
+                            <div class="border-x border-gray-200">
+                                <p class="text-[10px] text-amber-700 uppercase font-bold">Slip (2026)</p>
+                                <p class="font-mono font-bold text-xs text-amber-800">₹${slipAmt}</p>
+                            </div>
+                            <div>
+                                <p class="text-[10px] text-festiveRed uppercase font-bold">Paid (2026)</p>
+                                <p class="font-mono font-extrabold text-sm text-festiveRed">₹${paidAmt}</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between text-[11px] text-gray-600 pt-1">
+                            <div>
+                                <span class="font-bold text-gray-800"><i class="fa-solid fa-wallet mr-1 text-amber-700"></i>${d.type || 'Cash'}</span>
+                                <span class="mx-1">•</span>
+                                <span>${d.source || 'Home Visit'}</span>
+                                <div class="text-[10px] text-gray-400">${d.date || ''}</div>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                ${dueAmt > 0 ? `<span class="px-2 py-0.5 bg-red-100 text-red-700 rounded font-bold text-[10px]">Due: ₹${dueAmt}</span>` : ''}
+                                <button onclick="openDonorSlipModal('${d.id}')" class="bg-festiveRed hover:bg-deepCrimson text-festiveGold px-2.5 py-1.5 rounded-lg text-[10px] font-bold uppercase shadow transition">
+                                    <i class="fa-solid fa-print mr-1"></i> Slip
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            oldMatches.slice(0, 12).forEach(old => {
+                html += `
+                    <div class="bg-white rounded-xl p-4 border border-gray-300 shadow-sm relative opacity-95">
+                        <div class="flex items-start justify-between border-b pb-2.5">
+                            <div>
+                                <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-gray-200 text-gray-700">2025 RECORD</span>
+                                <h4 class="font-extrabold text-base text-gray-800 capitalize mt-1">${old.name}</h4>
+                                <p class="text-xs text-gray-500 font-medium"><i class="fa-solid fa-location-dot text-gray-400 mr-1"></i>${old.village}</p>
+                            </div>
+                            <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase bg-amber-100 text-amber-800 border border-amber-300">
+                                <i class="fa-solid fa-clock mr-0.5"></i> 2026 Pending
+                            </span>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2 my-3 text-center bg-gray-50 p-2.5 rounded-lg border">
+                            <div>
+                                <p class="text-[10px] text-gray-500 uppercase font-bold">Last Year Amount</p>
+                                <p class="font-mono font-extrabold text-sm text-gray-800">₹${old.amount}</p>
+                            </div>
+                            <div class="border-l">
+                                <p class="text-[10px] text-gray-400 uppercase font-bold">Current (2026)</p>
+                                <p class="font-mono font-bold text-xs text-amber-700">Not Collected Yet</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between text-[11px] text-gray-500 pt-1">
+                            <span>Pichhle saal ka chanda record</span>
+                            <a href="https://tkumar7804-eng.github.io/Maa-2026/" class="text-festiveRed hover:underline font-bold text-xs">
+                                + Add in Main App <i class="fa-solid fa-arrow-right ml-0.5"></i>
+                            </a>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `</div>`;
+            resultsBox.innerHTML = html;
+        }
+
+        function clearGlobalDonorSearch() {
+            const input = document.getElementById('globalDonorSearchInput');
+            if (input) input.value = '';
+            const tableSearch = document.getElementById('searchChanda');
+            if (tableSearch) tableSearch.value = '';
+            handleSmartDonorLookup();
+            renderChandaTable();
+        }
+
+        function openDonorSlipModal(id) {
+            const d = globalData.chanda.find(x => x.id === id);
+            if (!d) return;
+            document.getElementById('dSlipId').textContent = d.id || 'N/A';
+            document.getElementById('dSlipDate').textContent = d.date || 'N/A';
+            document.getElementById('dSlipName').textContent = d.name || 'N/A';
+            document.getElementById('dSlipVillage').textContent = d.village || 'N/A';
+            document.getElementById('dSlipLastYear').textContent = '₹' + (d.lastYear || 0);
+            document.getElementById('dSlipWritten').textContent = '₹' + (d.slip || 0);
+            document.getElementById('dSlipPaid').textContent = '₹' + (d.amount || 0);
+            document.getElementById('dSlipMode').textContent = `${d.type || 'Cash'} (${d.source || 'Direct'})`;
+            document.getElementById('donorSlipModal').classList.remove('hidden');
+        }
+
+        function closeDonorSlipModal() {
+            document.getElementById('donorSlipModal').classList.add('hidden');
+        }
+
+        function switchReportTab(tabKey) {
+            document.querySelectorAll('.report-section').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('bg-festiveRed', 'text-festiveGold', 'border-festiveGold');
+                el.classList.add('bg-white', 'text-gray-700', 'border-gray-200');
+            });
+
+            document.getElementById('sec-' + tabKey).classList.remove('hidden');
+            const activeBtn = document.getElementById('btn-' + tabKey);
+            activeBtn.classList.remove('bg-white', 'text-gray-700', 'border-gray-200');
+            activeBtn.classList.add('bg-festiveRed', 'text-festiveGold', 'border-festiveGold');
+        }
+
+        function updateDashboardStats() {
+            const totalChanda = globalData.chanda.reduce((acc, x) => acc + (parseFloat(x.amount) || 0), 0);
+            const totalSlip = globalData.chanda.reduce((acc, x) => acc + (parseFloat(x.slip) || 0), 0);
+            const totalKharch = globalData.kharch.reduce((acc, x) => acc + (parseFloat(x.amount) || 0), 0);
+            const totalDeposit = globalData.deposit.reduce((acc, x) => acc + (parseFloat(x.total) || 0), 0);
+            const balanceInHand = totalChanda - totalKharch - totalDeposit;
+
+            document.getElementById('statChanda').textContent = '₹' + totalChanda;
+            document.getElementById('statSlipTotal').textContent = 'Slip Total: ₹' + totalSlip;
+            document.getElementById('statKharch').textContent = '₹' + totalKharch;
+            document.getElementById('statDeposit').textContent = '₹' + totalDeposit;
+            document.getElementById('statBalance').textContent = '₹' + balanceInHand;
+            document.getElementById('statDonors').textContent = globalData.chanda.length;
+        }
+
+        function renderChandaTable() {
+            const search = (document.getElementById('searchChanda')?.value || '').toLowerCase();
+            const villageFilter = document.getElementById('villageFilterChanda')?.value || '';
+
+            const filtered = globalData.chanda.filter(x => {
+                const matchSearch = (x.name || '').toLowerCase().includes(search) || 
+                                    (x.village || '').toLowerCase().includes(search) ||
+                                    (x.id || '').toLowerCase().includes(search);
+                const matchVillage = !villageFilter || x.village === villageFilter;
+                return matchSearch && matchVillage;
+            });
+
+            const tbody = document.getElementById('tableChandaBody');
+            const tfoot = document.getElementById('tableChandaFoot');
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-gray-400">No Chanda records found.</td></tr>`;
+                if (tfoot) tfoot.innerHTML = '';
+                return;
+            }
+
+            const sumLastYear = filtered.reduce((acc, x) => acc + (parseFloat(x.lastYear) || 0), 0);
+            const sumSlip = filtered.reduce((acc, x) => acc + (parseFloat(x.slip) || 0), 0);
+            const sumAmount = filtered.reduce((acc, x) => acc + (parseFloat(x.amount) || 0), 0);
+
+            tbody.innerHTML = filtered.map((x, idx) => `
+                <tr class="hover:bg-gray-50 border-b">
+                    <td class="p-3 font-mono text-xs text-gray-500">${idx + 1} <span class="block text-[10px] text-gray-400">${x.id || ''}</span></td>
+                    <td class="p-3">
+                        <div class="font-bold text-gray-800 capitalize">${x.name || '-'}</div>
+                        <div class="text-xs text-gray-500"><i class="fa-solid fa-location-dot mr-1 text-festiveRed"></i>${x.village || '-'}</div>
+                    </td>
+                    <td class="p-3 font-mono text-gray-600">₹${x.lastYear || 0}</td>
+                    <td class="p-3 font-mono font-semibold text-amber-800">₹${x.slip || 0}</td>
+                    <td class="p-3 font-mono font-bold text-festiveRed">₹${x.amount || 0}</td>
+                    <td class="p-3 text-xs">
+                        <span class="px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-medium">${x.type || 'Cash'}</span>
+                        <div class="text-gray-400 mt-0.5">${x.source || ''} • ${x.date || ''}</div>
+                    </td>
+                    <td class="p-3 text-right no-print">
+                        <button onclick="openDonorSlipModal('${x.id}')" class="bg-red-50 hover:bg-red-100 text-festiveRed px-2.5 py-1 rounded text-xs font-bold">
+                            <i class="fa-solid fa-receipt mr-1"></i> Slip
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+
+            if (tfoot) {
+                tfoot.innerHTML = `
+                    <tr class="bg-amber-50 font-bold border-t-2 border-festiveGold text-sm">
+                        <td colspan="2" class="p-3 text-right uppercase text-xs text-deepCrimson">Total (${filtered.length} Donors):</td>
+                        <td class="p-3 font-mono text-gray-700">₹${sumLastYear}</td>
+                        <td class="p-3 font-mono text-amber-800">₹${sumSlip}</td>
+                        <td class="p-3 font-mono text-festiveRed text-base">₹${sumAmount}</td>
+                        <td colspan="2" class="p-3"></td>
+                    </tr>
+                `;
+            }
+        }
+
+        function renderKharchTable() {
+            const search = (document.getElementById('searchKharch')?.value || '').toLowerCase();
+            const filtered = globalData.kharch.filter(x =>
+                (x.purpose || '').toLowerCase().includes(search) ||
+                (x.incurredBy || '').toLowerCase().includes(search)
+            );
+
+            const tbody = document.getElementById('tableKharchBody');
+            const tfoot = document.getElementById('tableKharchFoot');
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-gray-400">No expense records found.</td></tr>`;
+                if (tfoot) tfoot.innerHTML = '';
+                return;
+            }
+
+            const sumKharch = filtered.reduce((acc, x) => acc + (parseFloat(x.amount) || 0), 0);
+
+            tbody.innerHTML = filtered.map((x, idx) => `
+                <tr class="hover:bg-gray-50 border-b">
+                    <td class="p-3 font-mono text-xs text-gray-500">${idx + 1} <span class="block text-[10px] text-gray-400">${x.id || ''}</span></td>
+                    <td class="p-3 font-bold text-gray-800">${x.purpose || '-'}</td>
+                    <td class="p-3 text-gray-600">${x.incurredBy || '-'}</td>
+                    <td class="p-3 font-mono font-bold text-amber-700">₹${x.amount || 0}</td>
+                    <td class="p-3 text-xs text-gray-500">${x.type || 'Cash'} • ${x.date || ''}</td>
+                </tr>
+            `).join('');
+
+            if (tfoot) {
+                tfoot.innerHTML = `
+                    <tr class="bg-amber-50 font-bold border-t-2 border-festiveGold text-sm">
+                        <td colspan="3" class="p-3 text-right uppercase text-xs text-deepCrimson">Total Expenditure (${filtered.length} Items):</td>
+                        <td class="p-3 font-mono text-amber-800 text-base">₹${sumKharch}</td>
+                        <td class="p-3"></td>
+                    </tr>
+                `;
+            }
+        }
+
+        function renderDepositTable() {
+            const tbody = document.getElementById('tableDepositBody');
+            const tfoot = document.getElementById('tableDepositFoot');
+
+            if (globalData.deposit.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-gray-400">No HOD deposit records found.</td></tr>`;
+                if (tfoot) tfoot.innerHTML = '';
+                return;
+            }
+
+            const sumCash = globalData.deposit.reduce((acc, x) => acc + (parseFloat(x.cash) || 0), 0);
+            const sumUpi = globalData.deposit.reduce((acc, x) => acc + (parseFloat(x.upi) || 0), 0);
+            const sumTotal = globalData.deposit.reduce((acc, x) => acc + (parseFloat(x.total) || 0), 0);
+
+            tbody.innerHTML = globalData.deposit.map((x, idx) => `
+                <tr class="hover:bg-gray-50 border-b">
+                    <td class="p-3 font-mono text-xs text-gray-500">${idx + 1}</td>
+                    <td class="p-3 font-mono font-bold text-festiveRed">${x.slipId || x.id || '-'}</td>
+                    <td class="p-3">
+                        <div class="font-bold text-gray-800">To: ${x.to || '-'}</div>
+                        <div class="text-xs text-gray-500">By: ${x.by || '-'}</div>
+                    </td>
+                    <td class="p-3 text-xs">Cash: <strong>₹${x.cash || 0}</strong> | UPI: <strong>₹${x.upi || 0}</strong></td>
+                    <td class="p-3 font-mono font-bold text-blue-700">₹${x.total || 0}</td>
+                    <td class="p-3 text-xs text-gray-500">${x.date || ''}</td>
+                    <td class="p-3 text-right no-print">
+                        <button onclick="viewDepositSlip('${x.id || x.slipId}')" class="bg-blue-50 hover:bg-blue-100 text-blue-700 px-2.5 py-1 rounded text-xs font-bold">
+                            <i class="fa-solid fa-file-signature mr-1"></i> Slip
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+
+            if (tfoot) {
+                tfoot.innerHTML = `
+                    <tr class="bg-blue-50 font-bold border-t-2 border-blue-300 text-sm">
+                        <td colspan="3" class="p-3 text-right uppercase text-xs text-blue-900">Total Handed Over:</td>
+                        <td class="p-3 text-xs text-blue-900">Cash: ₹${sumCash} | UPI: ₹${sumUpi}</td>
+                        <td class="p-3 font-mono text-blue-800 text-base">₹${sumTotal}</td>
+                        <td colspan="2" class="p-3"></td>
+                    </tr>
+                `;
+            }
+        }
+
+        function renderActivityTable() {
+            const tbody = document.getElementById('tableActivityBody');
+            if (!tbody) return;
+            if (globalData.activity.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-gray-400">No recent user logs recorded yet.</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = globalData.activity.slice(0, 100).map((a, idx) => `
+                <tr class="hover:bg-gray-50 border-b text-xs">
+                    <td class="p-3 font-mono text-gray-500">${idx + 1}</td>
+                    <td class="p-3 font-bold text-gray-800">${a.userName || a.username || 'System'} <span class="px-1.5 py-0.5 text-[10px] rounded bg-red-100 text-festiveRed ml-1">${a.role || ''}</span></td>
+                    <td class="p-3"><span class="font-semibold text-festiveRed">${a.action}:</span> ${a.details || ''}</td>
+                    <td class="p-3 text-gray-500 font-mono">${a.timestamp || ''}</td>
+                </tr>
+            `).join('');
+        }
+
+        function viewDepositSlip(idOrSlip) {
+            const item = globalData.deposit.find(x => x.id === idOrSlip || x.slipId === idOrSlip);
+            if (!item) return;
+            document.getElementById('recSlipId').textContent = item.slipId || item.id;
+            document.getElementById('recDate').textContent = item.date || '';
+            document.getElementById('recBy').textContent = item.by || '';
+            document.getElementById('recTo').textContent = item.to || '';
+            document.getElementById('recCash').textContent = '₹' + (item.cash || 0);
+            document.getElementById('recUpi').textContent = '₹' + (item.upi || 0);
+            document.getElementById('recTotal').textContent = '₹' + (item.total || 0);
+            document.getElementById('recBySigImg').src = item.bySig || '';
+            document.getElementById('recHodSigImg').src = item.hodSig || '';
+            document.getElementById('receiptModal').classList.remove('hidden');
+        }
+
+        function closeReceiptModal() {
+            document.getElementById('receiptModal').classList.add('hidden');
+        }
+
+        function printReport() {
+            window.print();
+        }
+    </script>
+
+    <!-- Top Header Connected with index.html -->
+    <header class="bg-gradient-to-r from-deepCrimson via-festiveRed to-deepCrimson text-white shadow-lg border-b-2 border-festiveGold py-4 px-6">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-3 text-center sm:text-left">
+                <div class="w-12 h-12 bg-festiveGold text-deepCrimson rounded-full flex items-center justify-center font-bold text-xl shadow">
+                    <i class="fa-solid fa-om"></i>
+                </div>
+                <div>
+                    <h1 class="festive-title text-xl sm:text-2xl font-bold text-festiveGold tracking-wide">DURGA PUJA SAMITI SOMBARIHATPARA</h1>
+                    <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 mt-0.5">
+                        <p class="text-xs text-amber-200 uppercase tracking-widest font-semibold">Official Admin Live Report & PDF Portal</p>
+                        <span id="connectedUserBadge" class="hidden bg-black/40 text-amber-200 px-2.5 py-0.5 rounded-full text-[10px] font-bold border border-festiveGold/40"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-center gap-2.5 no-print">
+                <span id="syncStatusText" class="bg-black/30 text-emerald-300 px-3 py-1.5 rounded-full text-xs font-bold border border-emerald-500/30">
+                    <i class="fa-solid fa-rotate fa-spin mr-1"></i> Connecting...
+                </span>
+                <button onclick="fetchAllData()" class="bg-festiveGold hover:bg-amber-400 text-deepCrimson px-3 py-1.5 rounded-lg text-xs font-bold shadow transition flex items-center gap-1.5 uppercase">
+                    <i class="fa-solid fa-rotate"></i> Sync Data
+                </button>
+                <!-- Direct Link Back -->
+                <a href="https://tkumar7804-eng.github.io/Maa-2026/" class="bg-white hover:bg-amber-100 text-deepCrimson px-3.5 py-1.5 rounded-lg text-xs font-extrabold shadow transition flex items-center gap-1.5 uppercase border border-festiveGold">
+                    <i class="fa-solid fa-arrow-left"></i> Main App (index.html)
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 py-6 space-y-6">
+
+        <!-- INSTANT DONOR SEARCH BAR & LIVE PROFILE CARD VIEWER -->
+        <div class="bg-gradient-to-r from-deepCrimson via-festiveRed to-deepCrimson p-5 rounded-2xl shadow-xl border-2 border-festiveGold no-print">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="text-white">
+                    <h2 class="festive-title text-lg font-bold text-festiveGold flex items-center gap-2">
+                        <i class="fa-solid fa-magnifying-glass-dollar"></i> Instant Donor Search & Verification
+                    </h2>
+                    <p class="text-xs text-amber-200">Kisi bhi Donor ka naam ya gaon type karein — uska 2026 aur 2025 ka poora data turant dekhein.</p>
+                </div>
+                <div class="relative flex-1 max-w-xl">
+                    <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-festiveRed">
+                        <i class="fa-solid fa-user-magnifying-glass text-base"></i>
+                    </span>
+                    <input
+                        type="text"
+                        id="globalDonorSearchInput"
+                        oninput="handleSmartDonorLookup()"
+                        placeholder="Type donor name (e.g. Rajkumar, Manoj, Gautam) or village..."
+                        class="w-full pl-11 pr-20 py-3 rounded-xl bg-white text-gray-900 font-semibold text-sm shadow-inner border-2 border-festiveGold focus:outline-none focus:ring-2 focus:ring-amber-300"
+                    >
+                    <button
+                        id="clearDonorSearchBtn"
+                        onclick="clearGlobalDonorSearch()"
+                        class="hidden absolute inset-y-1.5 right-1.5 bg-red-100 hover:bg-red-200 text-festiveRed px-3 rounded-lg text-xs font-bold uppercase transition"
+                    >
+                        Clear
+                    </button>
+                </div>
+            </div>
+
+            <!-- Instant Search Results Container -->
+            <div id="globalDonorResultsBox" class="hidden mt-4 pt-3 border-t border-festiveGold/40"></div>
+        </div>
+        
+        <!-- Summary Cards Bar -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+            <div class="bg-white p-4 rounded-xl shadow border-l-4 border-festiveRed">
+                <p class="text-[10px] font-bold text-gray-500 uppercase">Total Chanda (Paid)</p>
+                <h3 id="statChanda" class="text-lg sm:text-xl font-extrabold text-festiveRed mt-1">₹0</h3>
+                <p id="statSlipTotal" class="text-[10px] font-mono text-amber-800 mt-0.5">Slip Total: ₹0</p>
+            </div>
+            <div class="bg-white p-4 rounded-xl shadow border-l-4 border-amber-600">
+                <p class="text-[10px] font-bold text-gray-500 uppercase">Total Kharch</p>
+                <h3 id="statKharch" class="text-lg sm:text-xl font-extrabold text-amber-700 mt-1">₹0</h3>
+            </div>
+            <div class="bg-white p-4 rounded-xl shadow border-l-4 border-blue-600">
+                <p class="text-[10px] font-bold text-gray-500 uppercase">HOD Deposited</p>
+                <h3 id="statDeposit" class="text-lg sm:text-xl font-extrabold text-blue-700 mt-1">₹0</h3>
+            </div>
+            <div class="bg-white p-4 rounded-xl shadow border-l-4 border-emerald-600">
+                <p class="text-[10px] font-bold text-gray-500 uppercase">Balance in Hand</p>
+                <h3 id="statBalance" class="text-lg sm:text-xl font-extrabold text-emerald-700 mt-1">₹0</h3>
+            </div>
+            <div class="bg-white p-4 rounded-xl shadow border-l-4 border-purple-600 col-span-2 sm:col-span-1">
+                <p class="text-[10px] font-bold text-gray-500 uppercase">Total Donors</p>
+                <h3 id="statDonors" class="text-lg sm:text-xl font-extrabold text-purple-700 mt-1">0</h3>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs for Reports -->
+        <div class="flex flex-wrap gap-2 no-print">
+            <button id="btn-chanda" onclick="switchReportTab('chanda')" class="tab-btn bg-festiveRed text-festiveGold px-5 py-2.5 rounded-xl text-xs font-bold uppercase border-2 border-festiveGold shadow transition flex items-center gap-2">
+                <i class="fa-solid fa-hand-holding-dollar"></i> Chanda Collection Report
+            </button>
+            <button id="btn-kharch" onclick="switchReportTab('kharch')" class="tab-btn bg-white text-gray-700 px-5 py-2.5 rounded-xl text-xs font-bold uppercase border-2 border-gray-200 shadow transition flex items-center gap-2">
+                <i class="fa-solid fa-receipt"></i> Kharch (Expenses) Report
+            </button>
+            <button id="btn-deposit" onclick="switchReportTab('deposit')" class="tab-btn bg-white text-gray-700 px-5 py-2.5 rounded-xl text-xs font-bold uppercase border-2 border-gray-200 shadow transition flex items-center gap-2">
+                <i class="fa-solid fa-vault"></i> HOD Deposit Slips Report
+            </button>
+            <button id="btn-activity" onclick="switchReportTab('activity')" class="tab-btn bg-white text-gray-700 px-5 py-2.5 rounded-xl text-xs font-bold uppercase border-2 border-gray-200 shadow transition flex items-center gap-2">
+                <i class="fa-solid fa-clock-rotate-left"></i> Live Activity Logs
+            </button>
+        </div>
+
+        <!-- Section 1: Chanda Report -->
+        <section id="sec-chanda" class="report-section bg-white rounded-2xl shadow-xl p-6 border print-shadow">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b gap-4">
+                <div>
+                    <h2 class="festive-title text-xl font-bold text-festiveRed">Chanda Collection Statement</h2>
+                    <p class="text-xs text-gray-500">Live synced donor contributions & slip amounts</p>
+                </div>
+                <div class="flex flex-wrap items-center gap-2 no-print">
+                    <div class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-gray-400 text-xs"></i>
+                        <input type="text" id="searchChanda" oninput="renderChandaTable()" placeholder="Filter donor in table..." class="pl-8 pr-3 py-1.5 rounded-lg border text-xs focus:ring-2 focus:ring-festiveRed focus:outline-none w-48">
+                    </div>
+                    <select id="villageFilterChanda" onchange="renderChandaTable()" class="px-3 py-1.5 rounded-lg border text-xs focus:ring-2 focus:ring-festiveRed focus:outline-none">
+                        <option value="">All Villages</option>
+                    </select>
+                    <button onclick="printReport()" class="bg-festiveRed hover:bg-deepCrimson text-festiveGold px-4 py-2 rounded-lg text-xs font-bold uppercase shadow flex items-center gap-1.5 transition">
+                        <i class="fa-solid fa-file-pdf"></i> Download PDF / Print
+                    </button>
+                </div>
+            </div>
+
+            <div class="mt-4 overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-gray-100 text-xs uppercase text-gray-700 border-b">
+                        <tr>
+                            <th class="p-3"># / ID</th>
+                            <th class="p-3">Donor Name & Village</th>
+                            <th class="p-3">Last Year</th>
+                            <th class="p-3">Slip (₹)</th>
+                            <th class="p-3">Current Amount</th>
+                            <th class="p-3">Payment Info</th>
+                            <th class="p-3 text-right no-print">Receipt</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableChandaBody" class="divide-y">
+                        <tr><td colspan="7" class="p-6 text-center text-gray-400">Loading data...</td></tr>
+                    </tbody>
+                    <tfoot id="tableChandaFoot"></tfoot>
+                </table>
+            </div>
+        </section>
+
+        <!-- Section 2: Kharch Report -->
+        <section id="sec-kharch" class="report-section hidden bg-white rounded-2xl shadow-xl p-6 border print-shadow">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b gap-4">
+                <div>
+                    <h2 class="festive-title text-xl font-bold text-festiveRed">Kharch (Expenses) Statement</h2>
+                    <p class="text-xs text-gray-500">Complete itemized record of committee expenditure.</p>
+                </div>
+                <div class="flex flex-wrap items-center gap-2 no-print">
+                    <input type="text" id="searchKharch" oninput="renderKharchTable()" placeholder="Search expense or member..." class="px-3 py-1.5 rounded-lg border text-xs focus:ring-2 focus:ring-festiveRed focus:outline-none w-48">
+                    <button onclick="printReport()" class="bg-festiveRed hover:bg-deepCrimson text-festiveGold px-4 py-2 rounded-lg text-xs font-bold uppercase shadow flex items-center gap-1.5 transition">
+                        <i class="fa-solid fa-file-pdf"></i> Download PDF / Print
+                    </button>
+                </div>
+            </div>
+
+            <div class="mt-4 overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-gray-100 text-xs uppercase text-gray-700 border-b">
+                        <tr>
+                            <th class="p-3"># / ID</th>
+                            <th class="p-3">Purpose / Item</th>
+                            <th class="p-3">Incurred By</th>
+                            <th class="p-3">Amount</th>
+                            <th class="p-3">Mode & Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableKharchBody" class="divide-y">
+                        <tr><td colspan="5" class="p-6 text-center text-gray-400">Loading data...</td></tr>
+                    </tbody>
+                    <tfoot id="tableKharchFoot"></tfoot>
+                </table>
+            </div>
+        </section>
+
+        <!-- Section 3: HOD Deposit Report -->
+        <section id="sec-deposit" class="report-section hidden bg-white rounded-2xl shadow-xl p-6 border print-shadow">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b gap-4">
+                <div>
+                    <h2 class="festive-title text-xl font-bold text-festiveRed">HOD Deposit / Handover Statement</h2>
+                    <p class="text-xs text-gray-500">Record of all funds handed over to the Treasurer/HOD with digital signatures.</p>
+                </div>
+                <div class="no-print">
+                    <button onclick="printReport()" class="bg-festiveRed hover:bg-deepCrimson text-festiveGold px-4 py-2 rounded-lg text-xs font-bold uppercase shadow flex items-center gap-1.5 transition">
+                        <i class="fa-solid fa-file-pdf"></i> Download PDF / Print
+                    </button>
+                </div>
+            </div>
+
+            <div class="mt-4 overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-gray-100 text-xs uppercase text-gray-700 border-b">
+                        <tr>
+                            <th class="p-3">#</th>
+                            <th class="p-3">Slip ID</th>
+                            <th class="p-3">Handed Over To / By</th>
+                            <th class="p-3">Cash / UPI Breakdown</th>
+                            <th class="p-3">Total Amount</th>
+                            <th class="p-3">Date</th>
+                            <th class="p-3 text-right no-print">Signature Slip</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableDepositBody" class="divide-y">
+                        <tr><td colspan="7" class="p-6 text-center text-gray-400">Loading data...</td></tr>
+                    </tbody>
+                    <tfoot id="tableDepositFoot"></tfoot>
+                </table>
+            </div>
+        </section>
+
+        <!-- Section 4: Live Activity Logs -->
+        <section id="sec-activity" class="report-section hidden bg-white rounded-2xl shadow-xl p-6 border print-shadow">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b gap-4">
+                <div>
+                    <h2 class="festive-title text-xl font-bold text-festiveRed">System Activity Audit Logs</h2>
+                    <p class="text-xs text-gray-500">Live user actions synced directly</p>
+                </div>
+                <div class="no-print">
+                    <button onclick="printReport()" class="bg-festiveRed hover:bg-deepCrimson text-festiveGold px-4 py-2 rounded-lg text-xs font-bold uppercase shadow flex items-center gap-1.5 transition">
+                        <i class="fa-solid fa-file-pdf"></i> Download PDF / Print
+                    </button>
+                </div>
+            </div>
+
+            <div class="mt-4 overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-gray-100 text-xs uppercase text-gray-700 border-b">
+                        <tr>
+                            <th class="p-3">#</th>
+                            <th class="p-3">User & Role</th>
+                            <th class="p-3">Action Details</th>
+                            <th class="p-3">Timestamp</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableActivityBody" class="divide-y">
+                        <tr><td colspan="4" class="p-6 text-center text-gray-400">Loading activity logs...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Individual Donor Chanda Slip Modal -->
+    <div id="donorSlipModal" class="fixed inset-0 z-50 bg-black/50 hidden flex items-center justify-center p-4 overflow-y-auto no-print">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 border-t-4 border-festiveRed relative">
+            <div class="space-y-4 text-gray-800">
+                <div class="text-center border-b pb-3">
+                    <h2 class="festive-title font-bold text-lg text-festiveRed">DURGA PUJA SAMITI SOMBARIHATPARA</h2>
+                    <p class="text-xs font-bold text-amber-700 uppercase tracking-widest">OFFICIAL CHANDA RECEIPT • 2026</p>
+                </div>
+                <div class="grid grid-cols-2 text-xs gap-2 border-b pb-3">
+                    <div><strong>Receipt ID:</strong> <span id="dSlipId" class="font-mono text-festiveRed"></span></div>
+                    <div class="text-right"><strong>Date:</strong> <span id="dSlipDate"></span></div>
+                    <div class="col-span-2"><strong>Donor Name:</strong> <span id="dSlipName" class="capitalize font-bold text-gray-900"></span></div>
+                    <div class="col-span-2"><strong>Village / Para:</strong> <span id="dSlipVillage"></span></div>
+                </div>
+                <div class="text-xs space-y-1.5 bg-amber-50/70 p-3.5 rounded-lg border border-amber-200">
+                    <div class="flex justify-between"><span>Last Year (2025) Contribution:</span> <strong id="dSlipLastYear" class="font-mono"></strong></div>
+                    <div class="flex justify-between"><span>2026 Slip Amount:</span> <strong id="dSlipWritten" class="font-mono text-amber-800"></strong></div>
+                    <div class="flex justify-between border-t border-amber-200 pt-1.5 font-bold text-sm text-festiveRed"><span>Current Paid Amount:</span> <strong id="dSlipPaid" class="font-mono"></strong></div>
+                    <div class="flex justify-between text-[11px] text-gray-500 pt-1"><span>Payment Mode:</span> <span id="dSlipMode"></span></div>
+                </div>
+                <div class="text-center text-[10px] text-gray-500 pt-2 border-t font-mono">
+                    Verified by Durga Puja Samiti Sombarihatpara
+                </div>
+            </div>
+            <div class="mt-5 pt-3 border-t flex justify-end space-x-3">
+                <button type="button" onclick="closeDonorSlipModal()" class="px-4 py-2 rounded-lg border text-xs font-bold uppercase">Close</button>
+                <button type="button" onclick="window.print()" class="bg-festiveRed text-festiveGold px-5 py-2 rounded-lg text-xs font-bold uppercase shadow"><i class="fa-solid fa-print mr-1"></i> Print Receipt</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- View HOD Deposit Receipt Modal -->
+    <div id="receiptModal" class="fixed inset-0 z-50 bg-black/50 hidden flex items-center justify-center p-4 overflow-y-auto no-print">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 border-t-4 border-festiveRed relative">
+            <div class="space-y-4 text-gray-800">
+                <div class="text-center border-b pb-3">
+                    <h2 class="festive-title font-bold text-lg text-festiveRed">DURGA PUJA SAMITI SOMBARIHATPARA</h2>
+                    <p class="text-xs font-bold text-amber-700 uppercase tracking-widest">HOD DEPOSIT VERIFIED RECEIPT</p>
+                </div>
+                <div class="grid grid-cols-2 text-xs gap-2 border-b pb-3">
+                    <div><strong>Slip ID:</strong> <span id="recSlipId" class="font-mono text-festiveRed"></span></div>
+                    <div><strong>Date:</strong> <span id="recDate"></span></div>
+                    <div><strong>Handed By:</strong> <span id="recBy"></span></div>
+                    <div><strong>Received By (HOD):</strong> <span id="recTo"></span></div>
+                </div>
+                <div class="text-xs space-y-1 bg-gray-50 p-3 rounded-lg border">
+                    <div class="flex justify-between"><span>Cash Amount:</span> <strong id="recCash"></strong></div>
+                    <div class="flex justify-between"><span>UPI Amount:</span> <strong id="recUpi"></strong></div>
+                    <div class="flex justify-between border-t pt-1 font-bold text-sm text-festiveRed"><span>Total Amount:</span> <strong id="recTotal"></strong></div>
+                </div>
+                <div class="grid grid-cols-2 gap-4 pt-4 text-center text-xs">
+                    <div>
+                        <div class="h-16 border-b flex items-end justify-center pb-1"><img id="recBySigImg" class="max-h-14 object-contain" alt="Depositor Sign" /></div>
+                        <p class="font-bold mt-1">Depositor Signature</p>
+                    </div>
+                    <div>
+                        <div class="h-16 border-b flex items-end justify-center pb-1"><img id="recHodSigImg" class="max-h-14 object-contain" alt="HOD Sign" /></div>
+                        <p class="font-bold mt-1">HOD / Receiver Signature</p>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-6 pt-4 border-t flex justify-end space-x-3">
+                <button type="button" onclick="closeReceiptModal()" class="px-4 py-2 rounded-lg border text-xs font-bold uppercase">Close</button>
+                <button type="button" onclick="window.print()" class="bg-festiveRed text-festiveGold px-6 py-2 rounded-lg text-xs font-bold uppercase"><i class="fa-solid fa-print mr-1"></i> Print</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-deepCrimson text-white border-t-2 border-festiveGold mt-auto py-6 px-4 text-center text-xs no-print">
+        <p class="festive-title text-festiveGold font-bold">Durga Puja Samiti Sombarihatpara</p>
+        <p class="text-amber-200 mt-1">Admin Live Reporting Panel © 2026 • Connected with Main App</p>
+    </footer>
+
+</body>
+</html>
